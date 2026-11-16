@@ -20,7 +20,15 @@ async function copyDirectory(from, to) {
 async function main() {
   const assets = path.join(root, 'src', 'assets');
   await fs.mkdir(assets, { recursive: true });
-  await fs.copyFile(path.join(root, '..', 'assets', 'Logo', 'Mazen Logo.png'), path.join(assets, 'mazen-logo.png'));
+  const logoSource = path.join(root, '..', 'assets', 'Logo', 'Mazen Logo.png');
+  const bundledLogo = path.join(assets, 'mazen-logo.png');
+  try {
+    await fs.copyFile(logoSource, bundledLogo);
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+    // The standalone project repository already includes this logo.
+    await fs.access(bundledLogo);
+  }
   await Promise.all([
     copy('occt-import-js/dist/occt-import-js.js', 'occt-import-js.js'),
     copy('occt-import-js/dist/occt-import-js.wasm', 'occt-import-js.wasm'),
