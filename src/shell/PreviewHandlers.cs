@@ -109,8 +109,7 @@ namespace MAZEN.ShellExtensions
             try
             {
                 if (SelectedItemStream == null) return null;
-                SelectedItemStream.Stat(out var stat, 0);
-                var sourcePath = stat.pwcsName;
+                var sourcePath = SelectedItemStream.Name;
                 if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath)) return null;
                 var previewPath = PreviewRenderer.Render(sourcePath);
                 Bitmap result;
