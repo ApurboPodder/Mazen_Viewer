@@ -1,7 +1,6 @@
 allowBuilds:
-  electron: set this to true or false
-  electron-winstaller: set this to true or false
-dangerouslyAllowAllBuilds: true
+  electron: true
+  electron-winstaller: true
 minimumReleaseAgeExclude:
   - '@mlightcad/common@1.15.20'
   - '@mlightcad/data-model@1.15.20'
