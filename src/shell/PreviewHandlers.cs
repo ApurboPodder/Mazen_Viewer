@@ -54,7 +54,7 @@ namespace MAZEN.ShellExtensions
 
     [ComVisible(true), ClassInterface(ClassInterfaceType.None)]
     [Guid("9E287A25-187A-4E1E-AB41-79392D3A9E63")]
-    [DisplayName("MAZEN Viewer Preview Handler")]
+    [System.ComponentModel.DisplayName("MAZEN Viewer Preview Handler")]
     [PreviewHandler(DisableLowILProcessIsolation = true)]
     public sealed class MAZENPreviewHandler : SharpPreviewHandler
     {
@@ -101,7 +101,7 @@ namespace MAZEN.ShellExtensions
 
     [ComVisible(true), ClassInterface(ClassInterfaceType.None)]
     [Guid("82D1D3FC-EC7F-495A-9288-5A3DF4C4E032")]
-    [DisplayName("MAZEN Viewer Thumbnail Provider")]
+    [System.ComponentModel.DisplayName("MAZEN Viewer Thumbnail Provider")]
     public sealed class MAZENThumbnailHandler : SharpThumbnailHandler
     {
         protected override Bitmap GetThumbnailImage(uint width)
