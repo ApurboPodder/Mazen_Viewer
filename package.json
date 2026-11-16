@@ -8,7 +8,7 @@
     "prestart": "node scripts/copy-vendor.cjs",
     "start": "electron .",
     "build:renderer": "esbuild src/renderer.js --bundle --format=iife --outfile=src/renderer.bundle.js",
-    "dist:win": "dotnet build src/shell/MAZEN.ShellExtensions.csproj --configuration Release && node scripts/copy-vendor.cjs && esbuild src/renderer.js --bundle --format=iife --outfile=src/renderer.bundle.js && electron-builder --win nsis"
+    "dist:win": "dotnet build src/shell/MAZEN.ShellExtensions.csproj --configuration Release && node scripts/copy-vendor.cjs && esbuild src/renderer.js --bundle --format=iife --outfile=src/renderer.bundle.js && electron-builder --win nsis --publish never"
   },
   "dependencies": {
     "occt-import-js": "0.0.23",
