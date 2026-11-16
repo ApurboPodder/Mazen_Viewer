@@ -15,7 +15,7 @@ The installer will be written to `dist/MAZEN-Viewer-Setup-1.3.0.exe`. Run it to 
 
 ## Use
 
-Launch MAZEN Viewer and choose a supported 2D or 3D file, or right-click one in File Explorer and choose **Open with > MAZEN Viewer**. Windows might require **Choose another app > Always** the first time before it becomes the default. PDF and image files are read locally; 3D files are read locally and are not uploaded.
+Launch MAZEN Viewer and choose a supported 2D or 3D file, or right-click one in File Explorer and choose **Open with > MAZEN Viewer**. Windows might require **Choose another app > Always** the first time before it becomes the default. The installer registers current-user thumbnail and Preview pane handlers for supported formats. In File Explorer, enable the pane with **View > Show > Preview pane**. PDF and image files are read locally; 3D files are read locally and are not uploaded.
 
 The viewer supports `.glb`, `.stl`, `.fbx`, `.3dm`, `.stp`, `.step`, `.igs`, `.iges`, `.obj`, `.ply`, `.dae`, `.3ds`, `.3mf`, `.amf`, `.pdf`, `.svg`, `.png`, `.jpg`, `.jpeg`, `.webp`, `.bmp`, `.gif`, `.tif`, `.tiff`, `.cdr`, and `.cmx`. CDR/CMX drawings are converted locally to SVG by the bundled TraceDraw command-line converter. TraceDraw is licensed under MIT or Apache-2.0; its license notices are bundled in the installation. TraceDraw describes itself as alpha software, and some drawings may render differently or incompletely. See [TraceDraw source](https://github.com/tjy-gitnub/TraceDraw).
 

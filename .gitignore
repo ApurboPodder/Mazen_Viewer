@@ -2,3 +2,5 @@ node_modules/
 dist/
 dist-zup/
 Updated Installer/
+**/bin/
+**/obj/

@@ -13,6 +13,57 @@ const supportedExtensions = /\.(glb|stl|fbx|3dm|stp|step|igs|iges|obj|ply|dae|3d
 const isSupportedFile = (value) => typeof value === 'string' && supportedExtensions.test(value);
 const takeFileArg = (argv) => argv.find((value) => isSupportedFile(value) && !value.startsWith('--'));
 
+const previewIndex = process.argv.indexOf('--make-preview');
+const previewInput = previewIndex >= 0 ? process.argv[previewIndex + 1] : null;
+const previewOutput = previewIndex >= 0 ? process.argv[previewIndex + 2] : null;
+const previewTempRoot = path.resolve(os.tmpdir()) + path.sep;
+const normalizedPreviewOutput = previewOutput ? path.resolve(previewOutput) : '';
+const isPreviewOutputInTemp = normalizedPreviewOutput.toLowerCase().startsWith(previewTempRoot.toLowerCase());
+const isPreviewProcess = Boolean(previewInput && previewOutput && isSupportedFile(previewInput) && isPreviewOutputInTemp);
+
+if (isPreviewProcess) {
+  app.whenReady().then(async () => {
+    const previewWindow = new BrowserWindow({
+      width: 720, height: 540, show: false, backgroundColor: '#25282e',
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.cjs'),
+        contextIsolation: true, nodeIntegration: false, sandbox: true
+      }
+    });
+    let finished = false;
+    const finish = async (ok) => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timeout);
+      try {
+        if (ok) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          const image = await previewWindow.webContents.capturePage();
+          const png = image.resize({ width: 720, height: 540, quality: 'good' }).toPNG();
+          await fs.writeFile(previewOutput, png);
+        } else {
+          process.exitCode = 1;
+        }
+      } catch (error) {
+        console.error(error);
+        process.exitCode = 1;
+      } finally {
+        previewWindow.destroy();
+        app.quit();
+      }
+    };
+    const timeout = setTimeout(() => finish(false), 45000);
+    ipcMain.on('preview:ready', (_event, ok) => finish(ok));
+    previewWindow.webContents.once('did-finish-load', () => {
+      previewWindow.webContents.send('file:open-path', previewInput);
+    });
+    await previewWindow.loadFile(path.join(__dirname, 'index.html'), { query: { preview: '1' } });
+  }).catch((error) => {
+    console.error(error);
+    app.exit(1);
+  });
+} else {
+
 if (process.platform === 'win32' && process.argv.length > 1) pendingFile = takeFileArg(process.argv);
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) app.quit();
@@ -67,7 +118,7 @@ else {
       backgroundColor: '#10131a', title: 'MAZEN Viewer',
       webPreferences: {
         preload: path.join(__dirname, 'preload.cjs'),
-        contextIsolation: true, nodeIntegration: false, sandbox: true
+        contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false
       }
     });
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
@@ -77,6 +128,7 @@ else {
     mainWindow.on('page-title-updated', (event) => event.preventDefault());
   });
   app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+}
 }
 
 function sendFile(file) {

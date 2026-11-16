@@ -72711,6 +72711,8 @@ fn fs_main(in : VertexOutput) -> @location(0) vec4<f32> {
 
   // src/renderer.js
   var $ = (id) => document.getElementById(id);
+  var previewMode = new URLSearchParams(location.search).has("preview");
+  if (previewMode) document.documentElement.classList.add("preview-mode");
   var canvas = $("canvas");
   var viewport = $("viewport");
   var renderer = new WebGLRenderer({ canvas, antialias: true, alpha: false });
@@ -72850,8 +72852,12 @@ fn fs_main(in : VertexOutput) -> @location(0) vec4<f32> {
     image.onload = () => {
       $("fileInfo").textContent = `${sourceLabel || `${ext.toUpperCase()} image`} \xB7 ${image.naturalWidth} \xD7 ${image.naturalHeight} \xB7 ${formatBytes(buffer.byteLength)}`;
       showStatus("");
+      if (previewMode) window.glbApp.previewReady(true);
     };
-    image.onerror = () => showStatus("This image could not be displayed.");
+    image.onerror = () => {
+      showStatus("This image could not be displayed.");
+      if (previewMode) window.glbApp.previewReady(false);
+    };
   }
   async function renderPdfPage(pageNumber) {
     if (!pdfDocument) return;
@@ -72911,9 +72917,11 @@ fn fs_main(in : VertexOutput) -> @location(0) vec4<f32> {
       $("fileInfo").textContent = `PDF document \xB7 ${pdfDocument.numPages} ${pdfDocument.numPages === 1 ? "page" : "pages"} \xB7 ${formatBytes(buffer.byteLength)}`;
       await renderPdfPage(1);
       showStatus("");
+      if (previewMode) window.glbApp.previewReady(true);
     } catch (error) {
       console.error(error);
       showStatus(error.message || "This PDF could not be displayed.");
+      if (previewMode) window.glbApp.previewReady(false);
     }
   }
   async function openPath(filePath) {
@@ -72931,9 +72939,13 @@ fn fs_main(in : VertexOutput) -> @location(0) vec4<f32> {
       const file = await window.glbApp.readModel(filePath);
       const buffer = file.data.buffer.slice(file.data.byteOffset, file.data.byteOffset + file.data.byteLength);
       await loadModel(file.name, buffer);
+      if (previewMode && !["pdf", "svg", "png", "jpg", "jpeg", "webp", "bmp", "gif", "tif", "tiff"].includes(filePath.split(".").pop().toLowerCase())) {
+        window.glbApp.previewReady(true);
+      }
     } catch (error) {
       console.error(error);
       showStatus(error.message || "Could not open this model file.");
+      if (previewMode) window.glbApp.previewReady(false);
     }
   }
   async function loadModel(name, buffer) {

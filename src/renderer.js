@@ -14,6 +14,8 @@ import { AMFLoader } from '../node_modules/three/examples/jsm/loaders/AMFLoader.
 import * as pdfjsLib from '../node_modules/pdfjs-dist/build/pdf.mjs';
 
 const $ = (id) => document.getElementById(id);
+const previewMode = new URLSearchParams(location.search).has('preview');
+if (previewMode) document.documentElement.classList.add('preview-mode');
 const canvas = $('canvas'), viewport = $('viewport');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -131,8 +133,9 @@ function showImage(name, buffer, ext, sourceLabel = null) {
   image.onload = () => {
     $('fileInfo').textContent = `${sourceLabel || `${ext.toUpperCase()} image`} · ${image.naturalWidth} × ${image.naturalHeight} · ${formatBytes(buffer.byteLength)}`;
     showStatus('');
+    if (previewMode) window.glbApp.previewReady(true);
   };
-  image.onerror = () => showStatus('This image could not be displayed.');
+  image.onerror = () => { showStatus('This image could not be displayed.'); if (previewMode) window.glbApp.previewReady(false); };
 }
 
 async function renderPdfPage(pageNumber) {
@@ -187,9 +190,11 @@ async function showPdf(name, buffer) {
     $('fileInfo').textContent = `PDF document · ${pdfDocument.numPages} ${pdfDocument.numPages === 1 ? 'page' : 'pages'} · ${formatBytes(buffer.byteLength)}`;
     await renderPdfPage(1);
     showStatus('');
+    if (previewMode) window.glbApp.previewReady(true);
   } catch (error) {
     console.error(error);
     showStatus(error.message || 'This PDF could not be displayed.');
+    if (previewMode) window.glbApp.previewReady(false);
   }
 }
 
@@ -208,8 +213,12 @@ async function openPath(filePath) {
     const file = await window.glbApp.readModel(filePath);
     const buffer = file.data.buffer.slice(file.data.byteOffset, file.data.byteOffset + file.data.byteLength);
     await loadModel(file.name, buffer);
+    if (previewMode && !['pdf', 'svg', 'png', 'jpg', 'jpeg', 'webp', 'bmp', 'gif', 'tif', 'tiff'].includes(filePath.split('.').pop().toLowerCase())) {
+      window.glbApp.previewReady(true);
+    }
   } catch (error) {
     console.error(error); showStatus(error.message || 'Could not open this model file.');
+    if (previewMode) window.glbApp.previewReady(false);
   }
 }
 async function loadModel(name, buffer) {

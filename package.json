@@ -8,7 +8,7 @@
     "prestart": "node scripts/copy-vendor.cjs",
     "start": "electron .",
     "build:renderer": "esbuild src/renderer.js --bundle --format=iife --outfile=src/renderer.bundle.js",
-    "dist:win": "node scripts/copy-vendor.cjs && esbuild src/renderer.js --bundle --format=iife --outfile=src/renderer.bundle.js && electron-builder --win nsis"
+    "dist:win": "dotnet build src/shell/MAZEN.ShellExtensions.csproj --configuration Release && node scripts/copy-vendor.cjs && esbuild src/renderer.js --bundle --format=iife --outfile=src/renderer.bundle.js && electron-builder --win nsis"
   },
   "dependencies": {
     "occt-import-js": "0.0.23",
@@ -29,12 +29,18 @@
     },
     "files": [
       "src/**/*",
+      "!src/shell/**",
       "src/renderer.bundle.js",
       "src/vendor/**/*",
       "!src/vendor/tracedraw/**",
       "package.json"
     ],
     "extraResources": [
+      {
+        "from": "src/shell/bin/Release/net472/",
+        "to": "shell",
+        "filter": ["**/*"]
+      },
       {
         "from": "src/vendor/tracedraw/tracedraw-cli.exe",
         "to": "cdr-tools/tracedraw-cli.exe"
@@ -55,6 +61,7 @@
       "artifactName": "MAZEN-Viewer-Setup-${version}.${ext}"
     },
     "nsis": {
+      "include": "scripts/installer.nsh",
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
