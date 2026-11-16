@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>MAZEN Viewer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img class="brand-logo" src="assets/mazen-logo.png" alt="Mazen logo"><span><b>MAZEN VIEWER</b></span></div>
+    <div class="file-name" id="fileName">No model open</div>
+    <div class="top-actions"><button id="openButton" class="primary">＋ <span>Open file</span></button></div>
+  </header>
+  <main>
+    <section id="viewport" class="viewport">
+      <canvas id="canvas"></canvas>
+      <div id="welcome" class="welcome">
+        <div class="model-icon">◈</div><h1>Open a 2D or 3D file</h1>
+        <p>Choose a supported document or 3D model, or drop it anywhere in this window.</p>
+        <button id="welcomeOpen" class="primary">Choose a file</button>
+      </div>
+      <div id="status" class="status" hidden></div>
+      <div id="documentViewer" class="document-viewer" hidden>
+        <div id="pdfToolbar" class="pdf-toolbar" hidden>
+          <button id="pdfPrevious" type="button" aria-label="Previous page">‹</button>
+          <label>Page <input id="pdfPageNumber" type="number" min="1" value="1"> <span>of</span> <span id="pdfPageCount">1</span></label>
+          <button id="pdfNext" type="button" aria-label="Next page">›</button>
+          <span class="pdf-toolbar-spacer"></span>
+          <button id="pdfZoomOut" type="button" aria-label="Zoom out">−</button>
+          <span id="pdfZoomLabel">100%</span>
+          <button id="pdfZoomIn" type="button" aria-label="Zoom in">+</button>
+        </div>
+        <div id="pdfPageViewport" class="pdf-page-viewport" hidden><canvas id="pdfCanvas"></canvas></div>
+        <img id="imagePreview" class="image-preview" alt="2D file preview" hidden>
+      </div>
+      <div class="view-tools"><button id="fitButton" title="Fit model in view (F)">Fit view</button><button id="resetButton" title="Reset model, camera, and viewer controls (R)">Reset</button></div>
+      <div class="hint"><span id="axisHint">Z axis up</span> <i>·</i> Drag to orbit <i>·</i> Right-drag to pan <i>·</i> Scroll to zoom</div>
+    </section>
+    <aside class="toolbar">
+      <div class="toolbar-group"><span class="group-title">VIEW</span><button id="frontButton">Front</button><button id="sideButton">Side</button><button id="topButton">Top</button></div>
+        <div class="toolbar-group options"><span class="group-title">SCENE</span><label><input id="gridToggle" type="checkbox"> Ground grid</label><label><input id="rotateToggle" type="checkbox"> Auto rotate</label><label><input id="breathToggle" type="checkbox" checked> In / out motion</label><label class="brightness-row"><span>Brightness</span><input id="brightness" type="range" min="0.25" max="2.5" step="0.05" value="1" aria-label="Brightness"><output id="brightnessValue">100%</output></label><label class="color-row"><span>Background</span><input id="backgroundColor" type="color" value="#25282e" aria-label="Background color"></label></div>
+      <fieldset class="transform-controls" id="transformControls" disabled>
+        <legend>POSITION · MODEL UNITS</legend>
+        <label class="transform-axis"><span>X</span><input type="range" min="-0.12" max="0.12" step="0.001" value="0" data-position-axis="x"><input class="transform-number" type="number" min="-0.12" max="0.12" step="0.001" value="0" aria-label="X position" data-position-value="x"></label>
+        <label class="transform-axis"><span>Y</span><input type="range" min="-0.12" max="0.12" step="0.001" value="0" data-position-axis="y"><input class="transform-number" type="number" min="-0.12" max="0.12" step="0.001" value="0" aria-label="Y position" data-position-value="y"></label>
+        <label class="transform-axis"><span>Z</span><input type="range" min="-0.12" max="0.12" step="0.001" value="0" data-position-axis="z"><input class="transform-number" type="number" min="-0.12" max="0.12" step="0.001" value="0" aria-label="Z position" data-position-value="z"></label>
+        <legend>ROTATION · DEGREES</legend>
+        <label class="transform-axis"><span>X</span><input type="range" min="-180" max="180" step="1" value="0" data-rotation-axis="x"><input class="transform-number" type="number" min="-180" max="180" step="1" value="0" aria-label="X rotation in degrees" data-rotation-value="x"></label>
+        <label class="transform-axis"><span>Y</span><input type="range" min="-180" max="180" step="1" value="0" data-rotation-axis="y"><input class="transform-number" type="number" min="-180" max="180" step="1" value="0" aria-label="Y rotation in degrees" data-rotation-value="y"></label>
+        <label class="transform-axis"><span>Z</span><input type="range" min="-180" max="180" step="1" value="0" data-rotation-axis="z"><input class="transform-number" type="number" min="-180" max="180" step="1" value="0" aria-label="Z rotation in degrees" data-rotation-value="z"></label>
+      </fieldset>
+      <div class="file-info" id="fileInfo">Open a file to see its details.</div>
+    </aside>
+  </main>
+  <script src="vendor/occt-import-js.js"></script>
+  <script src="renderer.bundle.js"></script>
+</body>
+</html>

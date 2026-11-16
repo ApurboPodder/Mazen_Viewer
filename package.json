@@ -1,0 +1,223 @@
+{
+  "name": "mazen-viewer",
+  "version": "1.3.0",
+  "description": "MAZEN Viewer for 2D documents and 3D models",
+  "private": true,
+  "main": "src/main.cjs",
+  "scripts": {
+    "prestart": "node scripts/copy-vendor.cjs",
+    "start": "electron .",
+    "build:renderer": "esbuild src/renderer.js --bundle --format=iife --outfile=src/renderer.bundle.js",
+    "dist:win": "node scripts/copy-vendor.cjs && esbuild src/renderer.js --bundle --format=iife --outfile=src/renderer.bundle.js && electron-builder --win nsis"
+  },
+  "dependencies": {
+    "occt-import-js": "0.0.23",
+    "pdfjs-dist": "^6.4.299",
+    "rhino3dm": "8.32.1",
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.12",
+    "esbuild": "^0.25.0"
+  },
+  "build": {
+    "appId": "com.mazen.glbviewer",
+    "productName": "MAZEN Viewer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "src/renderer.bundle.js",
+      "src/vendor/**/*",
+      "!src/vendor/tracedraw/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "src/vendor/tracedraw/tracedraw-cli.exe",
+        "to": "cdr-tools/tracedraw-cli.exe"
+      },
+      {
+        "from": "src/vendor/tracedraw/LICENSE-MIT",
+        "to": "licenses/tracedraw-LICENSE-MIT"
+      },
+      {
+        "from": "src/vendor/tracedraw/LICENSE-APACHE",
+        "to": "licenses/tracedraw-LICENSE-APACHE"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "MAZEN-Viewer-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "fileAssociations": [
+      {
+        "ext": "glb",
+        "name": "3D Model",
+        "description": "3D model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "stl",
+        "name": "3D Model",
+        "description": "STL model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "fbx",
+        "name": "3D Model",
+        "description": "FBX model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "3dm",
+        "name": "3D Model",
+        "description": "Rhino 3D model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "stp",
+        "name": "3D Model",
+        "description": "STEP model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "step",
+        "name": "3D Model",
+        "description": "STEP model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "igs",
+        "name": "3D Model",
+        "description": "IGES model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "iges",
+        "name": "3D Model",
+        "description": "IGES model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "obj",
+        "name": "3D Model",
+        "description": "Wavefront OBJ model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "ply",
+        "name": "3D Model",
+        "description": "PLY model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "dae",
+        "name": "3D Model",
+        "description": "Collada model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "3ds",
+        "name": "3D Model",
+        "description": "3DS model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "3mf",
+        "name": "3D Model",
+        "description": "3MF model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "amf",
+        "name": "3D Model",
+        "description": "AMF model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "pdf",
+        "name": "2D Document",
+        "description": "PDF document",
+        "role": "Viewer"
+      },
+      {
+        "ext": "svg",
+        "name": "2D Image",
+        "description": "SVG image",
+        "role": "Viewer"
+      },
+      {
+        "ext": "png",
+        "name": "2D Image",
+        "description": "PNG image",
+        "role": "Viewer"
+      },
+      {
+        "ext": "jpg",
+        "name": "2D Image",
+        "description": "JPEG image",
+        "role": "Viewer"
+      },
+      {
+        "ext": "jpeg",
+        "name": "2D Image",
+        "description": "JPEG image",
+        "role": "Viewer"
+      },
+      {
+        "ext": "webp",
+        "name": "2D Image",
+        "description": "WebP image",
+        "role": "Viewer"
+      },
+      {
+        "ext": "bmp",
+        "name": "2D Image",
+        "description": "Bitmap image",
+        "role": "Viewer"
+      },
+      {
+        "ext": "gif",
+        "name": "2D Image",
+        "description": "GIF image",
+        "role": "Viewer"
+      },
+      {
+        "ext": "tif",
+        "name": "2D Image",
+        "description": "TIFF image",
+        "role": "Viewer"
+      },
+      {
+        "ext": "tiff",
+        "name": "2D Image",
+        "description": "TIFF image",
+        "role": "Viewer"
+      },
+      {
+        "ext": "cdr",
+        "name": "2D Drawing",
+        "description": "CorelDRAW drawing",
+        "role": "Viewer"
+      },
+      {
+        "ext": "cmx",
+        "name": "2D Drawing",
+        "description": "Corel presentation exchange drawing",
+        "role": "Viewer"
+      }
+    ]
+  }
+}
