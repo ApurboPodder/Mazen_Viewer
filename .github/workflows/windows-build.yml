@@ -5,6 +5,12 @@ on:
     branches: [main]
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing version tag to publish, such as v1.3.0 (leave blank for build only)
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -41,7 +47,7 @@ jobs:
           if-no-files-found: error
 
   publish-release:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -56,4 +62,5 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/MAZEN-Viewer-Setup-*.exe --title "MAZEN Viewer $GITHUB_REF_NAME" --generate-notes
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/MAZEN-Viewer-Setup-*.exe --repo "$GITHUB_REPOSITORY" --verify-tag --title "MAZEN Viewer $RELEASE_TAG" --generate-notes
